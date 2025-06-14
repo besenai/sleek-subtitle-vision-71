@@ -231,15 +231,18 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
 
   return (
     <div
-      className="w-full mt-6 flex flex-col shadow-xl rounded-xl border border-border animate-fade-in"
+      className="w-full mt-10 flex flex-col shadow-2xl rounded-2xl border-2 border-border animate-fade-in"
       style={{
         background: bgColor,
         color: textColor,
         transition: "background 0.2s, color 0.2s",
+        minHeight: "640px",
+        maxHeight: "86vh",
+        boxSizing: 'border-box'
       }}
     >
-      <div className="px-4 pt-5 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-2 mb-1 sm:mb-0">
+      <div className="px-4 pt-7 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-2 mb-1 sm:mb-0 relative">
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -258,7 +261,17 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                 <Settings size={22} />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 max-h-[80vh] overflow-y-auto">
+            <PopoverContent
+              side="right"
+              sideOffset={12}
+              align="start"
+              className="w-96 p-6 rounded-xl border-2 shadow-2xl"
+              style={{
+                minHeight: '540px',
+                maxHeight: '72vh',
+                marginTop: '-38px', // căn chỉnh khung cài đặt sát top nút settings
+              }}
+            >
               <div>
                 <div className="font-semibold mb-2 flex items-center gap-1">
                   <Settings size={16} />
@@ -368,8 +381,15 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         />
       </div>
       <div
-        className="max-h-[60vh] overflow-y-auto px-2 sm:px-4 pb-4 mt-1 flex flex-col gap-2"
-        style={{ fontSize, fontFamily, color: textColor }}
+        className="overflow-y-auto px-2 sm:px-4 pb-4 mt-2 flex flex-col gap-2"
+        style={{
+          fontSize,
+          fontFamily,
+          color: textColor,
+          flex: 1,
+          minHeight: "500px",
+          maxHeight: "65vh",
+        }}
       >
         {filtered.length === 0 ? (
           <div className="text-center text-muted-foreground py-6 text-base">Không tìm thấy subtitle nào.</div>
