@@ -73,9 +73,11 @@ const LANGUAGES: { label: string; value: string }[] = [
   { label: "Tatar", value: "tt" }, { label: "Uzbek", value: "uz" }, { label: "Pashto", value: "ps" }
 ];
 
-// Hàm loại bỏ mọi thẻ HTML ra khỏi text
+// Hàm loại bỏ mọi thẻ HTML và các pattern {\an8} hoặc {\\an8} ra khỏi text
 function stripHtmlTags(input: string): string {
-  return input.replace(/<[^>]*>/g, "");
+  return input
+    .replace(/<[^>]*>/g, "")
+    .replace(/{\\?an8}/g, "");
 }
 
 interface SubtitleListProps {
