@@ -231,13 +231,14 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
 
   return (
     <div
-      className="w-full mt-10 flex flex-col shadow-2xl rounded-2xl border-2 border-border animate-fade-in"
+      className="flex flex-col flex-1 min-h-0 w-full shadow-2xl rounded-2xl border-2 border-border animate-fade-in"
       style={{
         background: bgColor,
         color: textColor,
         transition: "background 0.2s, color 0.2s",
-        minHeight: "640px",
-        maxHeight: "86vh",
+        height: "100%",
+        minHeight: 0,
+        maxHeight: "100%",
         boxSizing: 'border-box'
       }}
     >
@@ -263,13 +264,14 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
             </PopoverTrigger>
             <PopoverContent
               side="right"
-              sideOffset={12}
               align="start"
+              sideOffset={16}
               className="w-96 p-6 rounded-xl border-2 shadow-2xl"
               style={{
-                minHeight: '540px',
-                maxHeight: '72vh',
-                marginTop: '-38px', // căn chỉnh khung cài đặt sát top nút settings
+                height: "calc(100vh - 80px)", // thấp hơn tổng header một chút
+                minHeight: 360,
+                maxHeight: "calc(100vh - 80px)",
+                overflowY: "auto",
               }}
             >
               <div>
@@ -381,14 +383,14 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         />
       </div>
       <div
-        className="overflow-y-auto px-2 sm:px-4 pb-4 mt-2 flex flex-col gap-2"
+        className="overflow-y-auto px-2 sm:px-4 pb-4 mt-2 flex flex-col gap-2 flex-1 min-h-0"
         style={{
           fontSize,
           fontFamily,
           color: textColor,
           flex: 1,
-          minHeight: "500px",
-          maxHeight: "65vh",
+          minHeight: 0,
+          maxHeight: "100%",
         }}
       >
         {filtered.length === 0 ? (
@@ -412,7 +414,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                     fontFamily,
                     background: "inherit",
                     color: "inherit",
-                    borderColor: isAnalyzed ? "#FFD600" : undefined, // yellow if analyzed, default otherwise
+                    borderColor: isAnalyzed ? "#FFD600" : undefined,
                     borderWidth: isAnalyzed ? "2px" : undefined,
                   }}
                   onClick={() => handleSubtitleClick(item)}
