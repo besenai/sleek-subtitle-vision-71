@@ -34,19 +34,43 @@ const fontFamilies = [
   { label: "Cabin", value: "'Cabin', Arial, sans-serif" },
 ];
 
-// Danh sách ngôn ngữ phổ biến với mã
+// 100 most common languages with ISO 639-1 codes
 const LANGUAGES: { label: string; value: string }[] = [
-  { label: "Tiếng Anh", value: "en" },
-  { label: "Tiếng Việt", value: "vi" },
-  { label: "Tiếng Nhật", value: "ja" },
-  { label: "Tiếng Hàn", value: "ko" },
-  { label: "Tiếng Pháp", value: "fr" },
-  { label: "Tiếng Trung", value: "zh" },
-  { label: "Tiếng Đức", value: "de" },
-  { label: "Tiếng Tây Ban Nha", value: "es" },
-  { label: "Tiếng Nga", value: "ru" },
-  { label: "Tiếng Thái", value: "th" },
-  { label: "Tiếng Ý", value: "it" },
+  { label: "English", value: "en" }, { label: "Mandarin Chinese", value: "zh" }, { label: "Hindi", value: "hi" },
+  { label: "Spanish", value: "es" }, { label: "French", value: "fr" }, { label: "Standard Arabic", value: "ar" },
+  { label: "Bengali", value: "bn" }, { label: "Portuguese", value: "pt" }, { label: "Russian", value: "ru" },
+  { label: "Urdu", value: "ur" }, { label: "Indonesian", value: "id" }, { label: "German", value: "de" },
+  { label: "Japanese", value: "ja" }, { label: "Swahili", value: "sw" }, { label: "Marathi", value: "mr" },
+  { label: "Telugu", value: "te" }, { label: "Turkish", value: "tr" }, { label: "Tamil", value: "ta" },
+  { label: "Western Punjabi", value: "pa" }, { label: "Wu Chinese (Shanghainese)", value: "wuu" },
+  { label: "Vietnamese", value: "vi" }, { label: "Korean", value: "ko" }, { label: "Hausa", value: "ha" },
+  { label: "Javanese", value: "jv" }, { label: "Egyptian Arabic", value: "arz" }, { label: "Italian", value: "it" },
+  { label: "Thai", value: "th" }, { label: "Gujarati", value: "gu" }, { label: "Kannada", value: "kn" },
+  { label: "Polish", value: "pl" }, { label: "Yue Chinese (Cantonese)", value: "yue" },
+  { label: "Persian (Farsi)", value: "fa" }, { label: "Malayalam", value: "ml" }, { label: "Sundanese", value: "su" },
+  { label: "Sudanese Arabic", value: "apd" }, { label: "Ukrainian", value: "uk" }, { label: "Bhojpuri", value: "bho" },
+  { label: "Tagalog", value: "tl" }, { label: "Romanian", value: "ro" }, { label: "Dutch", value: "nl" },
+  { label: "Greek", value: "el" }, { label: "Czech", value: "cs" }, { label: "Hungarian", value: "hu" },
+  { label: "Belarusian", value: "be" }, { label: "Swedish", value: "sv" }, { label: "Serbian", value: "sr" },
+  { label: "Azerbaijani", value: "az" }, { label: "Chhattisgarhi", value: "hne" }, { label: "Malay", value: "ms" },
+  { label: "Nepali", value: "ne" }, { label: "Uzbek", value: "uz" }, { label: "Sindhi", value: "sd" },
+  { label: "Moroccan Arabic", value: "ary" }, { label: "Tagalog", value: "tl" }, { label: "Burmese", value: "my" },
+  { label: "Amharic", value: "am" }, { label: "Fula", value: "ff" }, { label: "Oromo", value: "om" },
+  { label: "Igbo", value: "ig" }, { label: "Uzbek", value: "uz" }, { label: "Maithili", value: "mai" },
+  { label: "Yoruba", value: "yo" }, { label: "Uzbek", value: "uz" }, { label: "Sindhi", value: "sd" },
+  { label: "Balochi", value: "bal" }, { label: "Magahi", value: "mag" }, { label: "Thai", value: "th" },
+  { label: "Xhosa", value: "xh" }, { label: "Burmese", value: "my" }, { label: "Kurdish", value: "ku" },
+  { label: "Haitian Creole", value: "ht" }, { label: "Ilocano", value: "ilo" }, { label: "Quechua", value: "qu" },
+  { label: "Shona", value: "sn" }, { label: "Sinhalese", value: "si" }, { label: "Finnish", value: "fi" },
+  { label: "Hebrew", value: "he" }, { label: "Slovak", value: "sk" }, { label: "Danish", value: "da" },
+  { label: "Norwegian", value: "no" }, { label: "Bulgarian", value: "bg" }, { label: "Catalan", value: "ca" },
+  { label: "Croatian", value: "hr" }, { label: "Lithuanian", value: "lt" }, { label: "Latvian", value: "lv" },
+  { label: "Slovenian", value: "sl" }, { label: "Estonian", value: "et" }, { label: "Galician", value: "gl" },
+  { label: "Basque", value: "eu" }, { label: "Irish", value: "ga" }, { label: "Macedonian", value: "mk" },
+  { label: "Albanian", value: "sq" }, { label: "Armenian", value: "hy" }, { label: "Georgian", value: "ka" },
+  { label: "Mongolian", value: "mn" }, { label: "Kazakh", value: "kk" }, { label: "Lao", value: "lo" },
+  { label: "Turkmen", value: "tk" }, { label: "Tajik", value: "tg" }, { label: "Kyrgyz", value: "ky" },
+  { label: "Tatar", value: "tt" }, { label: "Uzbek", value: "uz" }, { label: "Pashto", value: "ps" }
 ];
 
 // Hàm loại bỏ mọi thẻ HTML ra khỏi text
@@ -288,6 +312,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                 </div>
                 <hr className="my-3" />
                 <div className="font-semibold mb-2 mt-2">Cấu hình API & ngôn ngữ</div>
+                {/* Reorder fields here for better usability */}
                 <div className="mb-3">
                   <div className="text-xs mb-1">Google API key dùng Gemini:</div>
                   <input
@@ -314,7 +339,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                     )}
                   </select>
                 </div>
-                <div>
+                <div className="mb-3">
                   <div className="text-xs mb-1">Ngôn ngữ mẹ đẻ của bạn:</div>
                   <select
                     value={nativeLang}
@@ -322,7 +347,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                     className="rounded border px-2 py-1 text-sm bg-background w-full"
                   >
                     {LANGUAGES.map(lang =>
-                      <option value={lang.value} key={lang.value}>{lang.label}</option>
+                      <option value={lang.value} key={lang.value + "_native"}>{lang.label}</option>
                     )}
                   </select>
                 </div>
@@ -353,8 +378,12 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
             const id = String(item.id);
             const isExpanded = expandedId === id;
             const analysisResult = analysis[id];
+            const isAnalyzed = analysisResult?.status === "success";
             return (
-              <div key={id} className="group">
+              <div
+                key={id}
+                className="group"
+              >
                 <div
                   className={`bg-accent/60 rounded-lg py-3 px-4 text-base sm:text-lg font-mono whitespace-pre-line transition border hover:border-primary/40 cursor-pointer select-text`}
                   style={{
@@ -363,13 +392,14 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                     fontFamily,
                     background: "inherit",
                     color: "inherit",
+                    borderColor: isAnalyzed ? "#FFD600" : undefined, // yellow if analyzed, default otherwise
+                    borderWidth: isAnalyzed ? "2px" : undefined,
                   }}
                   onClick={() => handleSubtitleClick(item)}
                   tabIndex={0}
                   aria-expanded={isExpanded}
                 >
                   {stripHtmlTags(item.text)}
-                  <span className="ml-2 text-xs text-primary group-hover:underline">{isExpanded ? "▲" : "▼"}</span>
                 </div>
                 {isExpanded && (
                   <div className="border rounded-lg mt-1 bg-background p-3 animate-fade-in text-sm whitespace-pre-wrap break-words">
