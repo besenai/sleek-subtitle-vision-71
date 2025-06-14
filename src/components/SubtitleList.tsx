@@ -266,18 +266,17 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
               side="right"
               align="start"
               sideOffset={16}
-              className="p-5 sm:p-6 rounded-xl border-2 shadow-2xl z-40"
+              className="p-4 sm:p-6 rounded-xl border-2 shadow-2xl z-40"
               style={{
-                width: "95vw",
+                width: "98vw",
                 maxWidth: 500,
                 minWidth: 220,
                 height: "auto",
                 minHeight: 240,
                 maxHeight: "90vh",
                 overflowY: "auto",
-                left: 0,
-                right: 0,
-                margin: "0 auto",
+                left: "50%",
+                transform: "translateX(-50%)",
               }}
             >
               <div className="sm:hidden text-center font-medium mb-2">Cài đặt hiển thị & ngôn ngữ</div>
