@@ -1,11 +1,37 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from "react";
+import SubtitleUploader from "@/components/SubtitleUploader";
+import SubtitleList from "@/components/SubtitleList";
+import { parseSRT, SubtitleItem } from "@/lib/srtParser";
 
 const Index = () => {
+  const [subtitles, setSubtitles] = useState<SubtitleItem[] | null>(null);
+
+  const handleSrtUpload = (content: string) => {
+    const result = parseSRT(content);
+    setSubtitles(result);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gradient-to-tr from-blue-50 to-indigo-100 flex flex-col items-center justify-center py-10">
+      <div className="w-full max-w-[950px] mx-auto">
+        <div className="bg-white/90 shadow-2xl rounded-xl px-8 py-10 flex flex-col items-center gap-6 animate-scale-in">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-primary mb-2 tracking-tight drop-shadow">
+            SRT Subtitle Viewer
+          </h1>
+          <p className="text-lg text-muted-foreground mb-2 max-w-xl text-center">
+            Xem, lọc và tìm kiếm file phụ đề .srt dễ dàng! Kéo thả file hoặc chọn file trên máy bạn để bắt đầu.
+          </p>
+          {!subtitles && (
+            <SubtitleUploader onUpload={handleSrtUpload} />
+          )}
+          {subtitles && (
+            <SubtitleList items={subtitles} />
+          )}
+          {!subtitles && (
+            <div className="text-sm mt-3 text-muted-foreground">Chưa có file nào được tải lên</div>
+          )}
+        </div>
       </div>
     </div>
   );
