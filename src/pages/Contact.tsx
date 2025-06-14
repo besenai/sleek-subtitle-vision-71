@@ -1,10 +1,16 @@
 
 import React from "react";
+import HomeLink from "@/components/HomeLink";
 
 const Contact = () => (
   <main className="bg-gradient-to-tr from-blue-50 to-indigo-100 min-h-screen flex flex-col items-center justify-center px-4 py-12">
     <section className="max-w-2xl w-full bg-white/90 rounded-xl shadow-2xl px-6 py-8 animate-scale-in">
-      <h1 className="text-3xl sm:text-4xl font-bold text-primary mb-3 text-center">Liên hệ</h1>
+      <div className="flex items-center mb-3">
+        <HomeLink />
+        <h1 className="text-3xl sm:text-4xl font-bold text-primary text-center flex-1">
+          Liên hệ
+        </h1>
+      </div>
       <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-2">
         Nếu bạn có câu hỏi, góp ý hoặc muốn hợp tác, hãy liên hệ với chúng tôi:
       </p>
