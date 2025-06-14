@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { SubtitleItem } from "@/lib/srtParser";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,7 @@ type LocalSettings = {
   nativeLang?: string;
 };
 
-const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
+const SubtitleList: React.FC<SubtitleListProps> = React.memo(({ items }) => {
   // UI settings
   const [search, setSearch] = useState("");
   const [bgColor, setBgColor] = useState(presetThemes[0].bg);
@@ -133,8 +133,8 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<Record<string, AnalysisResult>>({});
 
-  // Khi click subtitle
-  const handleSubtitleClick = async (item: SubtitleItem) => {
+  // Sử dụng useCallback cho hàm click subtitle (giảm render lại)
+  const handleSubtitleClick = useCallback(async (item: SubtitleItem) => {
     const id = String(item.id);
     if (expandedId === id) {
       setExpandedId(null);
@@ -142,7 +142,6 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
     }
     setExpandedId(id);
 
-    // Nếu đã phân tích rồi thì không cần gọi lại
     if (analysis[id]?.status === "success") return;
 
     if (!apiKey) {
@@ -158,7 +157,6 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
     }));
 
     try {
-      // Chuẩn bị prompt (gọi bằng model Gemini 1.5 của Google AI Studio API)
       const prompt = `
         Phân tích toàn diện ngữ pháp đoạn văn sau (hiện ở định dạng bảng, kèm giải thích rõ ràng từng cấu trúc được phát hiện) từ ngôn ngữ '${subtitleLang}' sang tiếng '${nativeLang}':\n
         "${stripHtmlTags(item.text)}"
@@ -168,8 +166,6 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         - Những điểm ngữ pháp đáng chú ý.
         Không nói lan man.
       `;
-
-      // Gọi API Gemini aistudio (Google, endpoint public)
       const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -195,7 +191,6 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
       const data = await res.json();
       let outText: string = "";
 
-      // Tuỳ trả về json, parse content
       if (
         data &&
         data.candidates &&
@@ -220,14 +215,16 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         [id]: { status: "error", message: (e?.message || "Lỗi không xác định!") },
       }));
     }
-  };
+  }, [expandedId, apiKey, subtitleLang, nativeLang, analysis]);
 
-  const filtered =
-    search.trim() === ""
+  // Dùng useMemo để filter (tối ưu render)
+  const filtered = useMemo(() => {
+    return search.trim() === ""
       ? items
       : items.filter((item) =>
           stripHtmlTags(item.text).toLowerCase().includes(search.toLowerCase())
         );
+  }, [search, items]);
 
   return (
     <div
@@ -387,7 +384,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
           type="text"
           placeholder="Tìm kiếm nội dung..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
           className="rounded-md border px-3 py-2 bg-accent focus:outline-primary transition w-full sm:w-56 text-base flex-shrink-0 sm:flex-shrink"
           style={{ color: textColor, background: "#fafbfc" }}
         />
@@ -453,6 +450,6 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
       </div>
     </div>
   );
-};
+});
 
 export default SubtitleList;

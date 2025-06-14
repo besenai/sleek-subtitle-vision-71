@@ -4,24 +4,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SRT Subtitle Viewer</title>
-    <meta name="description" content="Xem file phụ đề SRT nhanh, đẹp & hiện đại" />
+    <title>SRT Subtitle Viewer - Xem, tìm kiếm & học phụ đề SRT miễn phí</title>
+    <meta name="description" content="Trình xem phụ đề SRT siêu tốc, dễ dùng, hỗ trợ ngữ pháp AI, bộ lọc tìm kiếm, giao diện đẹp, tối ưu trên mọi thiết bị. Tăng hiệu quả học ngoại ngữ với Google Gemini AI." />
+    <meta name="keywords" content="SRT, Subtitle, Xem SRT, học tiếng Anh, AI, ngữ pháp, Google Gemini, phụ đề" />
     <meta name="author" content="Lovable" />
 
+    <!-- Open Graph for social -->
     <meta property="og:title" content="SRT Subtitle Viewer" />
-    <meta property="og:description" content="Xem file phụ đề SRT nhanh, đẹp & hiện đại" />
+    <meta property="og:description" content="Xem file phụ đề SRT miễn phí, kèm ngữ pháp AI, lọc & học hiệu quả." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lovable.app/" />
     <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
+    <!-- Twitter card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:title" content="SRT Subtitle Viewer" />
+    <meta name="twitter:description" content="Phần mềm xem phụ đề SRT đẹp, tìm kiếm mạnh, dịch AI, học dễ dàng." />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    <!-- Thêm Inter font (Google Fonts) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap">
+
+    <!-- Favicon chuẩn -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+
+    <!-- Preload & Optimize Google Fonts for SEO & speed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" media="all">
+
+    <!-- SEO: Structured data (JSON-LD schema.org) -->
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "WebApplication",
+        "name": "SRT Subtitle Viewer",
+        "url": "https://lovable.app/",
+        "description": "Trình xem phụ đề SRT miễn phí, AI, lọc và phân tích, học ngôn ngữ.",
+        "applicationCategory": "UtilitiesApplication",
+        "inLanguage": "en",
+        "operatingSystem": "All"
+      }
+    </script>
   </head>
 
   <body class="font-sans">
-    <div id="root"></div>
+    <header>
+      <nav aria-label="Breadcrumb" style="display:none"></nav>
+    </header>
+    <main id="root"></main>
+    <footer style="display:none"></footer>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
