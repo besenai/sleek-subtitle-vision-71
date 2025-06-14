@@ -401,7 +401,7 @@ const SubtitleList: React.FC<SubtitleListProps> = React.memo(({ items }) => {
                   role="button"
                   aria-label="Về trang chủ"
                 >
-                  🔄
+                  ↻
                 </span>
               </TooltipTrigger>
               <TooltipContent side="top" align="center">
