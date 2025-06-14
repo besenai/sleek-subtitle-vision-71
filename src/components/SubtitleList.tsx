@@ -111,7 +111,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
 
   // Khi click subtitle
   const handleSubtitleClick = async (item: SubtitleItem) => {
-    const id = item.id as string;
+    const id = String(item.id);
     if (expandedId === id) {
       setExpandedId(null);
       return;
@@ -350,10 +350,11 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
           <div className="text-center text-muted-foreground py-6 text-base">Không tìm thấy subtitle nào.</div>
         ) : (
           filtered.map((item) => {
-            const isExpanded = expandedId === item.id;
-            const analysisResult = analysis[item.id as string];
+            const id = String(item.id);
+            const isExpanded = expandedId === id;
+            const analysisResult = analysis[id];
             return (
-              <div key={item.id} className="group">
+              <div key={id} className="group">
                 <div
                   className={`bg-accent/60 rounded-lg py-3 px-4 text-base sm:text-lg font-mono whitespace-pre-line transition border hover:border-primary/40 cursor-pointer select-text`}
                   style={{
