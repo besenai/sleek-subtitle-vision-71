@@ -21,9 +21,7 @@ const Index = () => {
         <a href="/terms" className="hover:underline">Điều khoản</a>
         <a href="/privacy" className="hover:underline">Bảo mật</a>
       </nav>
-      <div className="text-xs text-muted-foreground mt-2">
-        © 2024 Lovable – SRT Subtitle Viewer
-      </div>
+      {/* Đã loại bỏ dòng bản quyền ở đây */}
     </footer>
   );
 
