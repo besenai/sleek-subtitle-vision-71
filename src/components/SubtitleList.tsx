@@ -6,6 +6,11 @@ interface SubtitleListProps {
   items: SubtitleItem[];
 }
 
+// Hàm loại bỏ mọi thẻ HTML ra khỏi text
+function stripHtmlTags(input: string): string {
+  return input.replace(/<[^>]*>/g, "");
+}
+
 const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
   const [search, setSearch] = useState("");
 
@@ -13,8 +18,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
     search.trim() === ""
       ? items
       : items.filter(
-          (item) =>
-            item.text.toLowerCase().includes(search.toLowerCase())
+          (item) => stripHtmlTags(item.text).toLowerCase().includes(search.toLowerCase())
         );
 
   return (
@@ -41,7 +45,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
               className="bg-accent/60 rounded-lg py-3 px-4 text-base sm:text-lg font-mono whitespace-pre-line transition border hover:border-primary/40 cursor-pointer select-text"
               style={{ wordBreak: "break-word" }}
             >
-              {item.text}
+              {stripHtmlTags(item.text)}
             </div>
           ))
         )}
@@ -51,4 +55,3 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
 };
 
 export default SubtitleList;
-
