@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SubtitleItem } from "@/lib/srtParser";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const presetThemes = [
   { bg: "#ffebee", text: "#b71c1c", name: "Đỏ nhạt" },
 ];
 
+// Font chữ
 const fontFamilies = [
   { label: "Sans (Hiện đại)", value: "Inter, Arial, sans-serif" },
   { label: "Serif (Cổ điển)", value: "Georgia, Times New Roman, serif" },
@@ -33,23 +34,169 @@ const fontFamilies = [
   { label: "Cabin", value: "'Cabin', Arial, sans-serif" },
 ];
 
-interface SubtitleListProps {
-  items: SubtitleItem[];
-}
+// Danh sách ngôn ngữ phổ biến với mã
+const LANGUAGES: { label: string; value: string }[] = [
+  { label: "Tiếng Anh", value: "en" },
+  { label: "Tiếng Việt", value: "vi" },
+  { label: "Tiếng Nhật", value: "ja" },
+  { label: "Tiếng Hàn", value: "ko" },
+  { label: "Tiếng Pháp", value: "fr" },
+  { label: "Tiếng Trung", value: "zh" },
+  { label: "Tiếng Đức", value: "de" },
+  { label: "Tiếng Tây Ban Nha", value: "es" },
+  { label: "Tiếng Nga", value: "ru" },
+  { label: "Tiếng Thái", value: "th" },
+  { label: "Tiếng Ý", value: "it" },
+];
 
 // Hàm loại bỏ mọi thẻ HTML ra khỏi text
 function stripHtmlTags(input: string): string {
   return input.replace(/<[^>]*>/g, "");
 }
 
-const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
-  const [search, setSearch] = useState("");
+interface SubtitleListProps {
+  items: SubtitleItem[];
+}
 
-  // Cài đặt theme
+type AnalysisResult = {
+  status: "idle" | "loading" | "error" | "success";
+  message?: string;
+  data?: string; // Kết quả hiển thị (HTML hoặc plain text)
+};
+
+const LOCAL_KEY = "subtitle_settings";
+type LocalSettings = {
+  apiKey?: string;
+  subtitleLang?: string;
+  nativeLang?: string;
+};
+
+const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
+  // UI settings
+  const [search, setSearch] = useState("");
   const [bgColor, setBgColor] = useState(presetThemes[0].bg);
   const [textColor, setTextColor] = useState(presetThemes[0].text);
   const [fontSize, setFontSize] = useState(18);
   const [fontFamily, setFontFamily] = useState(fontFamilies[0].value);
+
+  // API và ngôn ngữ
+  const [apiKey, setApiKey] = useState<string>("");
+  const [subtitleLang, setSubtitleLang] = useState("en");
+  const [nativeLang, setNativeLang] = useState("vi");
+
+  // Đọc settings từ localStorage
+  useEffect(() => {
+    const local = localStorage.getItem(LOCAL_KEY);
+    if (local) {
+      try {
+        const parsed: LocalSettings = JSON.parse(local);
+        if (parsed.apiKey) setApiKey(parsed.apiKey);
+        if (parsed.subtitleLang) setSubtitleLang(parsed.subtitleLang);
+        if (parsed.nativeLang) setNativeLang(parsed.nativeLang);
+      } catch {}
+    }
+  }, []);
+
+  // Lưu settings vào localStorage
+  useEffect(() => {
+    localStorage.setItem(
+      LOCAL_KEY,
+      JSON.stringify({ apiKey, subtitleLang, nativeLang })
+    );
+  }, [apiKey, subtitleLang, nativeLang]);
+
+  // Trạng thái mở rộng và phân tích
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<Record<string, AnalysisResult>>({});
+
+  // Khi click subtitle
+  const handleSubtitleClick = async (item: SubtitleItem) => {
+    const id = item.id as string;
+    if (expandedId === id) {
+      setExpandedId(null);
+      return;
+    }
+    setExpandedId(id);
+
+    // Nếu đã phân tích rồi thì không cần gọi lại
+    if (analysis[id]?.status === "success") return;
+
+    if (!apiKey) {
+      setAnalysis(a => ({
+        ...a,
+        [id]: { status: "error", message: "Vui lòng nhập Google API Key trước." },
+      }));
+      return;
+    }
+    setAnalysis(a => ({
+      ...a,
+      [id]: { status: "loading" },
+    }));
+
+    try {
+      // Chuẩn bị prompt (gọi bằng model Gemini 1.5 của Google AI Studio API)
+      const prompt = `
+        Phân tích toàn diện ngữ pháp đoạn văn sau (hiện ở định dạng bảng, kèm giải thích rõ ràng từng cấu trúc được phát hiện) từ ngôn ngữ '${subtitleLang}' sang tiếng '${nativeLang}':\n
+        "${stripHtmlTags(item.text)}"
+        Trả về kết quả rõ ràng, ngắn gọn (sử dụng tiếng ${LANGUAGES.find(l => l.value === nativeLang)?.label || "mẹ đẻ"}), bao gồm:
+        - Dịch nghĩa đầy đủ nếu chưa cùng ngôn ngữ
+        - Bảng phân tích từ loại, vai trò ngữ pháp, cấu trúc nổi bật.
+        - Những điểm ngữ pháp đáng chú ý.
+        Không nói lan man.
+      `;
+
+      // Gọi API Gemini aistudio (Google, endpoint public)
+      const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.3,
+            maxOutputTokens: 512,
+            stopSequences: [],
+            topP: 0.8,
+            topK: 32,
+          },
+          safetySettings: [
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+          ],
+        }),
+      });
+
+      if (!res.ok) throw new Error("Lỗi kết nối đến API Google: " + res.status);
+      const data = await res.json();
+      let outText: string = "";
+
+      // Tuỳ trả về json, parse content
+      if (
+        data &&
+        data.candidates &&
+        data.candidates[0]?.content &&
+        Array.isArray(data.candidates[0].content.parts)
+      ) {
+        outText = data.candidates[0].content.parts
+          .map((part: any) => part.text || "")
+          .join("\n")
+          .trim();
+      } else {
+        throw new Error("Không tìm thấy kết quả phân tích.");
+      }
+
+      setAnalysis(a => ({
+        ...a,
+        [id]: { status: "success", data: outText },
+      }));
+    } catch (e: any) {
+      setAnalysis(a => ({
+        ...a,
+        [id]: { status: "error", message: (e?.message || "Lỗi không xác định!") },
+      }));
+    }
+  };
 
   const filtered =
     search.trim() === ""
@@ -87,7 +234,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                 <Settings size={22} />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-80 max-h-[80vh] overflow-y-auto">
               <div>
                 <div className="font-semibold mb-2 flex items-center gap-1">
                   <Settings size={16} />
@@ -127,7 +274,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                     <Button size="sm" variant="outline" aria-label="Tăng" onClick={() => setFontSize((f) => Math.min(40, f + 2))}>+</Button>
                   </div>
                 </div>
-                <div>
+                <div className="mb-3">
                   <div className="text-xs mb-1">Font chữ:</div>
                   <select
                     value={fontFamily}
@@ -137,6 +284,46 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
                     {fontFamilies.map(f => (
                       <option key={f.value} value={f.value}>{f.label}</option>
                     ))}
+                  </select>
+                </div>
+                <hr className="my-3" />
+                <div className="font-semibold mb-2 mt-2">Cấu hình API & ngôn ngữ</div>
+                <div className="mb-3">
+                  <div className="text-xs mb-1">Google API key dùng Gemini:</div>
+                  <input
+                    type="password"
+                    autoComplete="off"
+                    value={apiKey}
+                    placeholder="Nhập Google API key"
+                    onChange={e => setApiKey(e.target.value.trim())}
+                    className="rounded border px-2 py-1 text-sm bg-background w-full"
+                  />
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Đăng ký miễn phí tại <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" className="underline text-blue-600">Google AI Studio</a>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <div className="text-xs mb-1">Ngôn ngữ của phụ đề:</div>
+                  <select
+                    value={subtitleLang}
+                    onChange={e => setSubtitleLang(e.target.value)}
+                    className="rounded border px-2 py-1 text-sm bg-background w-full"
+                  >
+                    {LANGUAGES.map(lang =>
+                      <option value={lang.value} key={lang.value}>{lang.label}</option>
+                    )}
+                  </select>
+                </div>
+                <div>
+                  <div className="text-xs mb-1">Ngôn ngữ mẹ đẻ của bạn:</div>
+                  <select
+                    value={nativeLang}
+                    onChange={e => setNativeLang(e.target.value)}
+                    className="rounded border px-2 py-1 text-sm bg-background w-full"
+                  >
+                    {LANGUAGES.map(lang =>
+                      <option value={lang.value} key={lang.value}>{lang.label}</option>
+                    )}
                   </select>
                 </div>
               </div>
@@ -162,21 +349,43 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         {filtered.length === 0 ? (
           <div className="text-center text-muted-foreground py-6 text-base">Không tìm thấy subtitle nào.</div>
         ) : (
-          filtered.map((item) => (
-            <div
-              key={item.id}
-              className="bg-accent/60 rounded-lg py-3 px-4 text-base sm:text-lg font-mono whitespace-pre-line transition border hover:border-primary/40 cursor-pointer select-text"
-              style={{
-                wordBreak: "break-word",
-                fontSize,
-                fontFamily,
-                background: "inherit",
-                color: "inherit",
-              }}
-            >
-              {stripHtmlTags(item.text)}
-            </div>
-          ))
+          filtered.map((item) => {
+            const isExpanded = expandedId === item.id;
+            const analysisResult = analysis[item.id as string];
+            return (
+              <div key={item.id} className="group">
+                <div
+                  className={`bg-accent/60 rounded-lg py-3 px-4 text-base sm:text-lg font-mono whitespace-pre-line transition border hover:border-primary/40 cursor-pointer select-text`}
+                  style={{
+                    wordBreak: "break-word",
+                    fontSize,
+                    fontFamily,
+                    background: "inherit",
+                    color: "inherit",
+                  }}
+                  onClick={() => handleSubtitleClick(item)}
+                  tabIndex={0}
+                  aria-expanded={isExpanded}
+                >
+                  {stripHtmlTags(item.text)}
+                  <span className="ml-2 text-xs text-primary group-hover:underline">{isExpanded ? "▲" : "▼"}</span>
+                </div>
+                {isExpanded && (
+                  <div className="border rounded-lg mt-1 bg-background p-3 animate-fade-in text-sm whitespace-pre-wrap break-words">
+                    {!analysisResult || analysisResult.status === "idle" || analysisResult.status === "loading" ? (
+                      <span className="block py-2 text-muted-foreground">
+                        Đang phân tích ngữ pháp... <span className="animate-pulse">⏳</span>
+                      </span>
+                    ) : analysisResult.status === "error" ? (
+                      <span className="block py-2 text-destructive">{analysisResult.message}</span>
+                    ) : (
+                      <span dangerouslySetInnerHTML={{ __html: analysisResult.data || "" }} />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
     </div>
