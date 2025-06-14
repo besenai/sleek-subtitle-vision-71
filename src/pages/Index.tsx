@@ -12,6 +12,18 @@ const Index = () => {
     setSubtitles(result);
   };
 
+  if (subtitles) {
+    // Khi đã có phụ đề chỉ hiển thị mỗi SubtitleList
+    return (
+      <div className="min-h-screen bg-gradient-to-tr from-blue-50 to-indigo-100 flex flex-col items-center justify-center py-2 px-1">
+        <div className="w-full max-w-[650px] sm:max-w-[700px] mx-auto">
+          <SubtitleList items={subtitles} />
+        </div>
+      </div>
+    );
+  }
+
+  // Khi chưa có phụ đề vẫn hiển thị giao diện tải lên như cũ
   return (
     <div className="min-h-screen bg-gradient-to-tr from-blue-50 to-indigo-100 flex flex-col items-center justify-center py-6 px-2">
       <div className="w-full max-w-[950px] mx-auto">
@@ -22,15 +34,8 @@ const Index = () => {
           <p className="text-base sm:text-lg text-muted-foreground mb-2 max-w-xl text-center">
             Xem, lọc và tìm kiếm file phụ đề .srt dễ dàng! Kéo thả file hoặc chọn file trên máy bạn để bắt đầu.
           </p>
-          {!subtitles && (
-            <SubtitleUploader onUpload={handleSrtUpload} />
-          )}
-          {subtitles && (
-            <SubtitleList items={subtitles} />
-          )}
-          {!subtitles && (
-            <div className="text-sm mt-3 text-muted-foreground">Chưa có file nào được tải lên</div>
-          )}
+          <SubtitleUploader onUpload={handleSrtUpload} />
+          <div className="text-sm mt-3 text-muted-foreground">Chưa có file nào được tải lên</div>
         </div>
       </div>
     </div>
@@ -38,3 +43,4 @@ const Index = () => {
 };
 
 export default Index;
+
