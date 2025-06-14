@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import SubtitleUploader from "@/components/SubtitleUploader";
 import SubtitleList from "@/components/SubtitleList";
@@ -14,10 +13,10 @@ const Index = () => {
 
   if (subtitles) {
     // Khi đã có phụ đề chỉ hiển thị mỗi SubtitleList
-    // Dùng h-screen và flex để toàn bộ vùng này vừa màn hình, không bị tràn
+    // Đảm bảo khung rộng vừa, đồng bộ với upload
     return (
       <div className="h-screen min-h-0 bg-gradient-to-tr from-blue-50 to-indigo-100 flex flex-col items-center justify-center py-0 px-0">
-        <div className="flex flex-col w-full h-full max-w-[850px] mx-auto flex-1 min-h-0">
+        <div className="flex flex-col w-full h-full max-w-[750px] mx-auto flex-1 min-h-0 px-1 sm:px-0">
           <SubtitleList items={subtitles} />
         </div>
       </div>
@@ -27,8 +26,8 @@ const Index = () => {
   // Khi chưa có phụ đề vẫn hiển thị giao diện tải lên như cũ
   return (
     <div className="h-screen min-h-0 bg-gradient-to-tr from-blue-50 to-indigo-100 flex flex-col items-center justify-center py-0 px-0">
-      <div className="flex flex-col w-full h-full max-w-[950px] mx-auto flex-1 min-h-0 justify-center">
-        <div className="bg-white/90 shadow-2xl rounded-xl px-2 sm:px-8 py-5 sm:py-10 flex flex-col items-center gap-6 animate-scale-in">
+      <div className="flex flex-col w-full h-full max-w-[750px] mx-auto flex-1 min-h-0 justify-center px-1 sm:px-0">
+        <div className="bg-white/90 shadow-2xl rounded-xl px-2 sm:px-8 py-5 sm:py-10 flex flex-col items-center gap-6 animate-scale-in w-full">
           <h1 className="text-3xl sm:text-5xl font-extrabold text-primary mb-2 tracking-tight drop-shadow text-center">
             SRT Subtitle Viewer
           </h1>
@@ -44,4 +43,3 @@ const Index = () => {
 };
 
 export default Index;
-

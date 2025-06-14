@@ -231,7 +231,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
 
   return (
     <div
-      className="flex flex-col flex-1 min-h-0 w-full shadow-2xl rounded-2xl border-2 border-border animate-fade-in"
+      className="flex flex-col flex-1 min-h-0 w-full shadow-2xl rounded-2xl border-2 border-border animate-fade-in max-w-[750px] mx-auto"
       style={{
         background: bgColor,
         color: textColor,
@@ -242,7 +242,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         boxSizing: 'border-box'
       }}
     >
-      <div className="px-4 pt-7 flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="px-2 sm:px-4 pt-7 flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="flex items-center gap-2 mb-1 sm:mb-0 relative">
           <Popover>
             <PopoverTrigger asChild>
@@ -266,14 +266,21 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
               side="right"
               align="start"
               sideOffset={16}
-              className="w-96 p-6 rounded-xl border-2 shadow-2xl"
+              className="p-5 sm:p-6 rounded-xl border-2 shadow-2xl z-40"
               style={{
-                height: "calc(100vh - 80px)", // thấp hơn tổng header một chút
-                minHeight: 360,
-                maxHeight: "calc(100vh - 80px)",
+                width: "95vw",
+                maxWidth: 500,
+                minWidth: 220,
+                height: "auto",
+                minHeight: 240,
+                maxHeight: "90vh",
                 overflowY: "auto",
+                left: 0,
+                right: 0,
+                margin: "0 auto",
               }}
             >
+              <div className="sm:hidden text-center font-medium mb-2">Cài đặt hiển thị & ngôn ngữ</div>
               <div>
                 <div className="font-semibold mb-2 flex items-center gap-1">
                   <Settings size={16} />
