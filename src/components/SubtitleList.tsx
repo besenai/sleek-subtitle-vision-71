@@ -242,15 +242,15 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
         boxSizing: 'border-box'
       }}
     >
-      <div className="px-2 sm:px-4 pt-7 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-2 mb-1 sm:mb-0 relative">
+      <div className="px-2 sm:px-4 pt-7 flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex flex-row items-center gap-2 mb-1 sm:mb-0 flex-1 min-w-0">
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 size="icon"
                 variant="ghost"
                 aria-label="Cài đặt hiển thị subtitle"
-                className="mr-1"
+                className="mr-1 flex-shrink-0"
                 style={{
                   color: textColor,
                   background: "transparent",
@@ -376,7 +376,10 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
               </div>
             </PopoverContent>
           </Popover>
-          <h2 className="text-xl sm:text-2xl font-bold flex-1" style={{ color: textColor }}>
+          <h2
+            className="text-xl sm:text-2xl font-bold flex-1 truncate"
+            style={{ color: textColor }}
+          >
             Danh sách Subtitles ({filtered.length})
           </h2>
         </div>
@@ -385,7 +388,7 @@ const SubtitleList: React.FC<SubtitleListProps> = ({ items }) => {
           placeholder="Tìm kiếm nội dung..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-md border px-3 py-2 bg-accent focus:outline-primary transition w-full sm:w-56 text-base"
+          className="rounded-md border px-3 py-2 bg-accent focus:outline-primary transition w-full sm:w-56 text-base flex-shrink-0 sm:flex-shrink"
           style={{ color: textColor, background: "#fafbfc" }}
         />
       </div>
