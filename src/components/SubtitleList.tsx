@@ -3,6 +3,7 @@ import { SubtitleItem } from "@/lib/srtParser";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 // Các lựa chọn màu nền và tương ứng màu chữ đảm bảo độ tương phản
 const presetThemes = [
@@ -374,10 +375,39 @@ const SubtitleList: React.FC<SubtitleListProps> = React.memo(({ items }) => {
             </PopoverContent>
           </Popover>
           <h2
-            className="text-xl sm:text-2xl font-bold flex-1 truncate"
+            className="text-xl sm:text-2xl font-bold flex-1 truncate flex items-center"
             style={{ color: textColor }}
           >
             Danh sách Subtitles ({filtered.length})
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className="ml-2 cursor-pointer transition hover:scale-110"
+                  title="Về trang chủ"
+                  onClick={() => window.location.assign('/')}
+                  tabIndex={0}
+                  style={{
+                    color: "red",
+                    fontSize: "1.18em",
+                    userSelect: "none",
+                    outline: "none"
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      window.location.assign('/');
+                    }
+                  }}
+                  role="button"
+                  aria-label="Về trang chủ"
+                >
+                  🔄
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="top" align="center">
+                Về trang chủ
+              </TooltipContent>
+            </Tooltip>
           </h2>
         </div>
         <input
