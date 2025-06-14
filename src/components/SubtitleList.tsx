@@ -2,9 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { SubtitleItem } from "@/lib/srtParser";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Settings, RefreshCcw } from "lucide-react";
-import { Tooltip, TooltipProvider, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useNavigate } from "react-router-dom";
+import { Settings } from "lucide-react";
 
 // Các lựa chọn màu nền và tương ứng màu chữ đảm bảo độ tương phản
 const presetThemes = [
@@ -228,8 +226,6 @@ const SubtitleList: React.FC<SubtitleListProps> = React.memo(({ items }) => {
         );
   }, [search, items]);
 
-  const navigate = (window as any).lovableNavigate || (typeof useNavigate === "function" ? useNavigate() : (href: string) => (window.location.href = href));
-
   return (
     <div
       className="flex flex-col flex-1 min-h-0 w-full shadow-2xl rounded-2xl border-2 border-border animate-fade-in max-w-[750px] mx-auto"
@@ -378,30 +374,10 @@ const SubtitleList: React.FC<SubtitleListProps> = React.memo(({ items }) => {
             </PopoverContent>
           </Popover>
           <h2
-            className="text-xl sm:text-2xl font-bold flex-1 truncate flex items-center gap-1"
+            className="text-xl sm:text-2xl font-bold flex-1 truncate"
             style={{ color: textColor }}
           >
             Danh sách Subtitles ({filtered.length})
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="ml-2 px-2 py-1 inline-flex items-center bg-transparent border-0 hover:text-primary/90 transition-colors text-base sm:text-lg focus:outline-none"
-                    style={{ fontSize: "1em", lineHeight: 1.1, display: "inline-flex", alignItems: "center" }}
-                    aria-label="Về trang chủ"
-                    tabIndex={0}
-                    onClick={() => navigate("/")}
-                  >
-                    <span role="img" aria-label="reload" className="mr-1" style={{ fontSize: "1.25em" }}>🔄</span>
-                    <RefreshCcw size={21} strokeWidth={2.2} className="align-middle" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" align="center" className="select-none">
-                  Về trang chủ
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </h2>
         </div>
         <input
