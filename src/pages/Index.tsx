@@ -12,26 +12,12 @@ const Index = () => {
     setSubtitles(result);
   };
 
-  // Footer navigation dưới cùng khung viewer
-  const FooterLinks = () => (
-    <footer className="w-full max-w-[750px] mx-auto flex flex-col items-center justify-center text-center pt-6 pb-2 gap-2 text-sm">
-      <nav className="flex flex-wrap justify-center gap-3 text-muted-foreground font-medium">
-        <a href="/about" className="hover:underline">Về chúng tôi</a>
-        <a href="/contact" className="hover:underline">Liên hệ</a>
-        <a href="/terms" className="hover:underline">Điều khoản</a>
-        <a href="/privacy" className="hover:underline">Bảo mật</a>
-      </nav>
-      {/* Đã loại bỏ dòng bản quyền ở đây */}
-    </footer>
-  );
-
   if (subtitles) {
     return (
       <main className="h-screen min-h-0 bg-gradient-to-tr from-blue-50 to-indigo-100 flex flex-col items-center justify-center py-0 px-0">
         <section className="flex flex-col w-full h-full max-w-[750px] mx-auto flex-1 min-h-0 px-1 sm:px-0" aria-label="Danh sách phụ đề">
           <SubtitleList items={subtitles} />
         </section>
-        <FooterLinks />
       </main>
     );
   }
@@ -50,7 +36,6 @@ const Index = () => {
           <div className="text-sm mt-3 text-muted-foreground">Chưa có file nào được tải lên</div>
         </div>
       </section>
-      <FooterLinks />
     </main>
   );
 };
